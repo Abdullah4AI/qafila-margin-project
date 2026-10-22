@@ -4,24 +4,26 @@ Read before implementation: `README.md`, `BRIEF.md`, the existing runner, dbt co
 
 ## Build
 
-- [ ] Retain the supplied dependencies and catalog configuration; support both CLI paths.
-- [ ] Load the four required SQLite tables and every matching supplier CSV into `raw`, with source filenames, without duplicates on rerun.
-- [ ] Keep raw supplier text; handle BOM, column drift, Arabic digits, decimal commas and trimmed SKUs in staging.
-- [ ] Quarantine every rejected supplier row, with unknown SKU taking priority over invalid cost.
-- [ ] Resolve duplicate SKU/date quotes by filename, carry missing weeks forward and collapse unchanged costs into exclusive SCD2 intervals.
-- [ ] Apply delivered/positive-quantity/start-date eligibility using Riyadh order dates; cost each eligible line at its historical price.
-- [ ] Publish the exact three contracted tables with their required types and grains, retaining uncosted revenue separately.
-- [ ] Update Iceberg tables in place; leave identical reruns unchanged and retain readable pre-correction snapshots.
-- [ ] Add at least six meaningful passing dbt tests and independent numerical/integration coverage.
+- [x] Retain the supplied dependencies and catalog configuration; support both CLI paths.
+- [x] Load the four required SQLite tables and every matching supplier CSV into `raw`, with source filenames, without duplicates on rerun.
+- [x] Keep raw supplier text; handle BOM, column drift, Arabic digits, decimal commas and trimmed SKUs in staging.
+- [x] Quarantine every rejected supplier row, with unknown SKU taking priority over invalid cost.
+- [x] Resolve duplicate SKU/date quotes by filename, carry missing weeks forward and collapse unchanged costs into exclusive SCD2 intervals.
+- [x] Apply delivered/positive-quantity/start-date eligibility using Riyadh order dates; cost each eligible line at its historical price.
+- [x] Publish the exact three contracted tables with their required types and grains, retaining uncosted revenue separately.
+- [x] Update Iceberg tables in place; leave identical reruns unchanged and retain readable pre-correction snapshots.
+- [x] Add at least six meaningful passing dbt tests and independent numerical/integration coverage.
 
 ## Verify and deliver
 
-- [ ] Compare every output against an independent reference for the course seed, seed 11 and a third local seed.
-- [ ] Exercise baseline reruns, late corrections, corrected reruns and snapshot time travel.
-- [ ] Test edge cases: unchanged/missing quotes, correction precedence, invalid/unknown costs, time boundaries and uncosted lines.
-- [ ] Run the supplied contract checker, Python syntax/static checks and a fresh-checkout reproduction.
-- [ ] Replace README placeholders with design/grains, observed issue counts, exact test and snapshot evidence, scaling limits and truthful AI assistance disclosure.
-- [ ] Use only Abdullah AlRashoudi's name; include no personal identifier, secrets, generated data or warehouse files.
+- [x] Compare every output against an independent reference for the course seed, seed 11 and a third local seed.
+- [x] Exercise baseline reruns, late corrections, corrected reruns and snapshot time travel.
+- [x] Test edge cases: unchanged/missing quotes, correction precedence, invalid/unknown costs, time boundaries and uncosted lines.
+- [x] Run the supplied contract checker, Python syntax/static checks and a fresh-checkout reproduction.
+- [x] Replace README placeholders with design/grains, observed issue counts, exact test and snapshot evidence, scaling limits and truthful AI assistance disclosure.
+- [x] Use only Abdullah AlRashoudi's name; include no personal identifier, secrets, generated data or warehouse files.
 - [ ] Review changes and staged files, commit real milestones, verify origin, push to the same repository and verify remote SHA/available CI.
 
 No web UI is requested. Google Sheet submission and any public deployment are outside this task's authorization.
+
+Validation on 2026-10-22: 40 dbt tests per build; 10 unit tests; independent comparisons across seeds 2026, 11 and 73; 18 integration builds including boundary and empty cases; corrected and original snapshots verified; supplied checker 22/22 on each generated dataset. A fresh tracked checkout passed the documented install/generate/run/check sequence. Python compilation, tabnanny, existing-system mypy and whitespace checks passed.
