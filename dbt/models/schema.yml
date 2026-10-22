@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: stg_products
+    description: One row per app product; SKU whitespace removed for supplier matching.
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+      - name: sku
+        data_tests: [unique, not_null]
+      - name: category
+        data_tests: [not_null]
+  - name: stg_stores
+    description: One row per app store, retaining its reporting city.
+    columns:
+      - name: store_id
+        data_tests: [unique, not_null]
+      - name: city
+        data_tests: [not_null]
+  - name: stg_orders
+    description: One row per app order, with its UTC timestamp converted to a Riyadh date.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: order_date
+        data_tests: [not_null]
+      - name: store_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+  - name: stg_order_items
+    description: One row per order ID and line number, with decimal monetary inputs.
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: product_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+  - name: stg_supplier_prices
+    description: One row per supplier source file and data-row number; raw cost retained beside parsed cost and rejection reason.
+    columns:
+      - name: source_file
+        data_tests: [not_null]
+      - name: source_row
+        data_tests: [not_null]
+      - name: valid_from
+        data_tests: [not_null]
+  - name: product_cost_history
+    description: One row per trimmed SKU and actual cost change, covering [valid_from, valid_to); only the current interval is open-ended.
+    columns:
+      - name: sku
+        data_tests: [not_null]
+      - name: unit_cost_sar
+        data_tests: [not_null]
+      - name: valid_from
+        data_tests: [not_null]
+      - name: is_current
+        data_tests: [not_null]
+  - name: order_line_margin
+    description: One row per eligible order line, including uncosted lines; the historical price is selected using the Riyadh order date.
+    columns:
+      - name: revenue_sar
+        data_tests: [not_null]
+      - name: is_costed
+        data_tests: [not_null]
+  - name: weekly_margin
+    description: One row per ISO week, store city and product category with at least one eligible line.
+    columns:
+      - name: iso_week
+        data_tests: [not_null]
+      - name: city
+        data_tests: [not_null]
+      - name: category
+        data_tests: [not_null]
+      - name: margin_sar
+        data_tests: [not_null]
+  - name: price_quarantine
+    description: One row per rejected supplier source row, including rejected originals after a valid correction arrives.
+    columns:
+      - name: reason
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [unknown_sku, invalid_cost]
